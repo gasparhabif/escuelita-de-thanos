@@ -31,13 +31,15 @@ esGuanteleteCompleto guantelete = (length.gemas) guantelete == 6 && material gua
 reducirUniverso :: Universo -> Universo
 reducirUniverso universo = take (div (length universo) 2) universo
 
--- Punto 2: (3 puntos) Resolver utilizando únicamente orden superior.
+-- Punto 2
 
 universoAptoParaPendex :: Universo -> Bool
 universoAptoParaPendex = any ((<45).edad)
 
 energiaTotalDeUniverso :: Universo -> Number
 energiaTotalDeUniverso universo = sum (map energia (filter ((1<).length.habilidades) universo))
+
+-- Punto 3
 
 laMente :: Number -> Gema
 laMente cantidad rival = rival {
@@ -79,36 +81,53 @@ disminuirEdadCorrespondiente :: Personaje -> Number
 disminuirEdadCorrespondiente personaje | (div (edad personaje) 2) > 18 = div (edad personaje) 2
                                        | otherwise = 18
 
--- La gema loca que permite manipular el poder de una gema y la ejecuta 2 veces contra un rival.
-gemaLoca :: Personaje -> Gema -> Personaje
-gemaLoca rival gema = (gema.gema) rival
+gemaLoca :: Gema -> Gema
+gemaLoca gema = (gema.gema)
 
 
--- Punto 3: (3 puntos) Implementar las gemas del infinito, evitando lógica duplicada. 
+-- Punto 4
+punisher :: Guantelete
+punisher = Guantelete{
+    material = "goma",
+    gemas = [elAlma "usar Mjolnir",gemaLoca (elAlma "programacion en Haskell")]
+}
 
--- Punto 4: (1 punto) Dar un ejemplo de un guantelete de goma con las gemas tiempo, alma que quita la habilidad de “usar Mjolnir” y 
--- la gema loca que manipula el poder del alma tratando de eliminar la “programación en Haskell”.
+-- Punto 5
 
+utilizar :: [Gema] -> Personaje -> Personaje
+utilizar gemas enemigo = foldr ($) enemigo gemas
 
--- Punto 5: (2 puntos). No se puede utilizar recursividad. Generar la función utilizar  que dado una lista de gemas y un enemigo 
--- ejecuta el poder de cada una de las gemas que lo componen contra el personaje dado. Indicar cómo se produce el “efecto de lado” 
--- sobre la víctima.
+-- Punto 6
+gemaMasPoderosa :: Guantelete -> Personaje -> Gema
+gemaMasPoderosa = (compararRoboEnergia.gemas)
 
+compararRoboEnergia :: [Gema] -> Personaje -> Gema
+compararRoboEnergia [unaGema] _ = unaGema
+compararRoboEnergia (primerGema:segundaGema:gemas) victima 
+    | (energia.primerGema) victima >= (energia.segundaGema) victima = compararRoboEnergia (primerGema:gemas) victima 
+    | otherwise = compararRoboEnergia (segundaGema:gemas) victima
 
--- Punto 6: (2 puntos). Resolver utilizando recursividad. Definir la función gemaMasPoderosa que dado un guantelete y una persona
--- obtiene la gema del infinito que produce la pérdida más grande de energía sobre la víctima. 
+unPersonaje = Personaje {
+    nombre = "ironMan",
+    edad = 30,
+    energia = 100,
+    habilidades = [],
+    planetaDondeViven = "Andromeda"
+}
+unGuantelete = Guantelete {
+    material = "unMat",
+    gemas = [elAlma "usar Mjolnir",elTiempo]
+}    
 
+-- Punto 7
+infinitasGemas :: Gema -> [Gema]
+infinitasGemas gema = gema:(infinitasGemas gema)
 
--- Punto 7: (1 punto) Dada la función generadora de gemas y un guantelete de locos:
--- infinitasGemas :: Gema -> [Gema]
--- infinitasGemas gema = gema:(infinitasGemas gema)
+guanteleteDeLocos :: Guantelete
+guanteleteDeLocos = Guantelete "vesconite" (infinitasGemas elTiempo)
 
--- guanteleteDeLocos :: Guantelete
--- guanteleteDeLocos = Guantelete "vesconite" (infinitasGemas tiempo)
-
--- Y la función 
--- usoLasTresPrimerasGemas :: Guantelete -> Personaje -> Personaje
--- usoLasTresPrimerasGemas guantelete = (utilizar . take 3. gemas) guantelete
+usoLasTresPrimerasGemas :: Guantelete -> Personaje -> Personaje
+usoLasTresPrimerasGemas guantelete = (utilizar . take 3. gemas) guantelete
 
 -- Justifique si se puede ejecutar, relacionándolo con conceptos vistos en la cursada:
 -- gemaMasPoderosa punisher guanteleteDeLocos
