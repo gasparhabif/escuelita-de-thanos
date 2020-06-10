@@ -2,13 +2,9 @@ import PdePreludat
 import Library
 import Test.Hspec
 
-gema1 = Gema {
-    poder = "Nidea"
-}
-
 guanteleteCompleto = Guantelete {
     material = "uru",
-    gemas = [gema1,gema1,gema1,gema1,gema1,gema1]
+    gemas = [laMente,laMente,laMente,laMente,gema1,gema1]
 }
 
 guanteleteIncompleto1 = Guantelete {
